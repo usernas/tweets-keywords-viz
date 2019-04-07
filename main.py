@@ -6,6 +6,7 @@ then extract more keywords that frequently appears in these tweets.
 import tweepy
 import pandas as pd
 import numpy as np
+import re
 import json
 from api_credentials import *
 
@@ -17,14 +18,15 @@ class MyStreamListener(tweepy.StreamListener):
     """classe permettant de réaliser un traitement sur les tweets reçus (stockage,
     analyse...)"""
 
-    def __init__(self, ntl=50, stf="datas/stored_tweets.json"):
+    def __init__(self, ntl=5, stf="datas/stored_tweets.json"):
         self.nb_tweets_limit = ntl
         self.cpt_tweets = 1
         self.stored_tweets_file = stf
-        self.tweets_DataFrame = pd.DataFrame(columns = ['author', 'text', 'timestamp'])
+        self.tweets_DataFrame = pd.DataFrame(
+            columns=['author', 'text', 'timestamp'])
 
     def on_connect(self):
-    	print("Connexion établie")
+        print("Connexion établie")
 
     def on_data(self, data):
         try:
@@ -34,23 +36,39 @@ class MyStreamListener(tweepy.StreamListener):
                 # file.write(data)
                 # print(json.loads(data)['user']['screen_name'])
                 # print(json.loads(data)['text'],"\n")
-               	self.tweets_DataFrame = self.tweets_DataFrame.append({
-                'author': [json.loads(data)['user']['name']],
-                'text': [json.loads(data)['text']],
-                'timestamp': [json.loads(data)['created_at']]},ignore_index=True)
-                #print(dtFrame)
-                # ou écrire dans un fichier ou stocker dans une dataframe
+                self.tweets_DataFrame = self.tweets_DataFrame.append({
+                    'author': json.loads(data)['user']['name'],
+                    'text': json.loads(data)['text'],
+                    'timestamp': json.loads(data)['created_at']}, ignore_index=True)
                 self.cpt_tweets += 1
                 file.close()
                 return True
 
             elif(json.loads(data)['text'].startswith("RT @")):
-            	print("skip RT\n")
-            	return True
+                print("skip RT\n")
+                return True
 
             else:
                 print("Number of tweets exceded")
+                # print(self.tweets_DataFrame.dtypes)
                 print(self.tweets_DataFrame)
+                # Data cleaning
+                # Minuscule
+                print("*******************FORCER MINUSCULES*******************")
+                self.tweets_DataFrame['text'] = self.tweets_DataFrame['text'].str.lower()
+                print(self.tweets_DataFrame)
+
+                # Suppression des caractères spéciaux avec une regex
+                print("*******************SUPPRESSION DES CARACTERES SPECIAUX*******************")
+                self.tweets_DataFrame['text'] = self.tweets_DataFrame['text'].apply(lambda x: re.sub('[\W]+', ' ', x))
+                print(self.tweets_DataFrame)                
+                # Suppression des digits
+                print("*******************SUPPRESSION DES DIGITS*******************")
+                self.tweets_DataFrame['text'] = self.tweets_DataFrame['text'].apply(lambda x: re.sub('[\d]+', ' ', x))
+
+                print(self.tweets_DataFrame)
+
+                self.tweets_DataFrame.to_csv(self.stored_tweets_file,sep='\t|\t')
                 return False
 
         except BaseException as e:
@@ -70,5 +88,7 @@ if __name__ == "__main__":
     api = tweepy.API(auth)
 
     MyStreamListener = MyStreamListener()
+    f = open(MyStreamListener.stored_tweets_file, "w")
+    f.close()
     myStream = tweepy.Stream(auth=api.auth, listener=MyStreamListener)
-    myStream.filter(track=[keyword])
+    myStream.filter(languages=["fr"],track=[keyword])
