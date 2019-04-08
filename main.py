@@ -3,6 +3,13 @@ I will use Twitter API to listen for tweets containing a single keyword given by
 then extract more keywords that frequently appears in these tweets.
  And i will finally visualize these datas on webpage as a point cloud or using js animation.
 """
+
+#UTILISATION DE SCIKIT LEARN POUR L'ALGO TFIDF
+#https://stackoverflow.com/questions/12118720/python-tf-idf-cosine-to-find-document-similarity/18914884#18914884
+#https://medium.freecodecamp.org/how-to-process-textual-data-using-tf-idf-in-python-cd2bbc0a94a3
+
+#http://kavita-ganesan.com/extracting-keywords-from-text-tfidf/
+
 import tweepy
 import pandas as pd
 import numpy as np
@@ -58,17 +65,19 @@ class MyStreamListener(tweepy.StreamListener):
                 self.tweets_DataFrame['text'] = self.tweets_DataFrame['text'].str.lower()
                 print(self.tweets_DataFrame)
 
+                
                 # Suppression des caractères spéciaux avec une regex
                 print("*******************SUPPRESSION DES CARACTERES SPECIAUX*******************")
                 self.tweets_DataFrame['text'] = self.tweets_DataFrame['text'].apply(lambda x: re.sub('[\W]+', ' ', x))
                 print(self.tweets_DataFrame)                
                 # Suppression des digits
                 print("*******************SUPPRESSION DES DIGITS*******************")
-                self.tweets_DataFrame['text'] = self.tweets_DataFrame['text'].apply(lambda x: re.sub('[\d]+', ' ', x))
+                self.tweets_DataFrame['text'] = self.tweets_DataFrame['text'].apply(lambda x: re.sub("[\d]+", ' ', x))
 
                 print(self.tweets_DataFrame)
 
-                self.tweets_DataFrame.to_csv(self.stored_tweets_file,sep='\t|\t')
+                #stockage dans un fichier
+                self.tweets_DataFrame.to_csv(self.stored_tweets_file,sep="\t")
                 return False
 
         except BaseException as e:
