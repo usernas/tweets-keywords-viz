@@ -1,29 +1,65 @@
-<!DOCTYPE hmtl>
+
 <html>
 	<head>
 		<title>Tweets viz</title>
+		<link rel="stylesheet" href="style/main.css"/>
 	</head>
 	<body>
 		<header>
-			<h1>Tweets Visualization</h1>
+			<h1>Tweets keywords visualization</h1>
 		</header>
-		<table>
-			<thead>
-				<tr>
-					<th>Authors</th>
-					<th>Time</th>
-					<th>Tweets</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<td>Test</td>
-					<td>Test</td>
-					<td>Test</td>
-				</tr>
-			</tbody>
-		<img src="https://altoona.psu.edu/sites/altoona/files/styles/photo_gallery_large/http/news.psu.edu/sites/default/files/success-word-cloud.jpg?itok=4_HTmhRg+" alt="points cloud"/>
+		<div id="params">
+			<ol>
+				<li>Mot clé : <strong>oui</strong></li>
+				<li>Nombre de tweets à récupérer : 5</li>
+				<li>Date/heure lancement du script : 2019-04-24 14:54:33.539456</li>
+			</ol>
+		</div>
+		<div id="dataviz">
+			<div id="hist">Histogramme</div>
+    		<div id ="table"><table border="1" class="dataframe" id="tweetsTable">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>author</th>
+      <th>text</th>
+      <th>timestamp</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Anna🧞‍♂️</td>
+      <td>de ouf</td>
+      <td>Wed Apr 24 12:54:36 +0000 2019</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>༄ ℜ𝖔𝖜𝖆𝖓.</td>
+      <td>évidemment comme tout le monde</td>
+      <td>Wed Apr 24 12:54:37 +0000 2019</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Russian fire🔥</td>
+      <td>non et</td>
+      <td>Wed Apr 24 12:54:42 +0000 2019</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Liliana</td>
+      <td>lithotherapie   c est vrai est ce bon signe</td>
+      <td>Wed Apr 24 12:54:42 +0000 2019</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Fnac</td>
+      <td>bastmbt   pour le wakanda https t co c tpvxl t</td>
+      <td>Wed Apr 24 12:54:43 +0000 2019</td>
+    </tr>
+  </tbody>
+</table></div>
+    	</div>
 	</body>
-	<footer>
-	</footer>
 </html>
+				
