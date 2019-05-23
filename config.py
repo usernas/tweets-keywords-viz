@@ -2,6 +2,7 @@ htmlContent = """
 <html>
 	<head>
 		<title>Tweets viz</title>
+		<link rel="icon" href="img/tweets-viz.png"/>
 		<link rel="stylesheet" href="style/main.css"/>
 	</head>
 	<body>
@@ -16,9 +17,10 @@ htmlContent = """
 			</ol>
 		</div>
 		<div id="dataviz">
-			<div id="hist">{hist}</div>
-    		<div id ="table">{table}</div>
+			<div id="hist"><img src="{hist}" alt="Histogramme"/></div>
+    		<div id ="table">{wordcloud}</div>
     	</div>
+    	<div id ="table">{table}</div>
 	</body>
 </html>
 """

@@ -1,13 +1,21 @@
 #params ol{
 	list-style: none;
+	margin : 15px;
+}
+#dataviz{
+	margin:15px;
+	width:100%;
+	display:inline-block;
 }
 #hist{
-display:block;
-width:50%;
+display:inline-block;
+width:auto;
+float:left;
 }
-#table{
-	display:block;
-width:50px;
+#wordcloud{
+	float:right;
+	display:inline-block;
+	width:auto;
 }
 #tweetsTable td{
 	width:33%;
