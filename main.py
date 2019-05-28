@@ -4,13 +4,8 @@ then extract more keywords that frequently appear in these tweets.
  And i will finally visualize these datas on webpage as a point cloud or using js animation.
 """
 
-#UTILISATION DE SCIKIT LEARN POUR L'ALGO TFIDF
-#https://stackoverflow.com/questions/12118720/python-tf-idf-cosine-to-find-document-similarity/18914884#18914884
-#https://medium.freecodecamp.org/how-to-process-textual-data-using-tf-idf-in-python-cd2bbc0a94a3
 
-#http://kavita-ganesan.com/extracting-keywords-from-text-tfidf/
 
-#from sklearn.feature_extraction.text import CountVectorizer
 import tweepy
 import pandas as pd
 import numpy as np
@@ -22,13 +17,11 @@ from config import *
 from datetime import *
 import argparse
 import matplotlib
+import math
+from PIL import Image
+from wordcloud import WordCloud
 
 matplotlib.use('Agg')
-'''
-mpl.use('Agg')
-mpl.rcParams['figure.figsize'] = (8,6)
-mpl.rcParams['font.size'] = 12'''
-# override tweepy.StreamListener to add logic to on_status
 
 
 class MyStreamListener(tweepy.StreamListener):
@@ -36,29 +29,27 @@ class MyStreamListener(tweepy.StreamListener):
     """classe permettant de réaliser un traitement sur les tweets reçus (stockage,
     analyse...)"""
 
-    def __init__(self, nbTweetsLimit=5, stf="./datas/stored_tweets.json",index = "./viz/index.html"):
+    def __init__(self, nbTweetsLimit,index = "./viz/index.html"):
         self.keyword = ''
         self.timestamp = ''
         self.nb_tweets_limit = nbTweetsLimit
         self.cpt_tweets = 1
-        self.stored_tweets_path = stf
         self.index_viz_path = index
         self.hist_path = "./viz/img/hist.png"
-        self.max_value_hist = 10
+        self.wordcloud_path = "./viz/img/wordcloud.png"
+        self.max_value_hist = 25
+        self.max_words_cloud = 100
+        self.max_displayed_tweets = int(math.ceil(self.nb_tweets_limit*0.05))
         self.tweets_DataFrame = pd.DataFrame(
             columns=['author', 'text', 'timestamp'])
-        #self.tweets_DataFrame_clean = {}
 
     def on_connect(self):
         print("Connexion établie")
 
     def on_data(self, data):
         try:
-            with open("./tweets.json",'a') as file:
-                json.dump(data,file)
             if(self.cpt_tweets <= self.nb_tweets_limit and not json.loads(data)['text'].startswith("RT @")):
                 print("Tweet numéro ", self.cpt_tweets)
-                #file = open(self.stored_tweets_path, 'a')
 
                 self.tweets_DataFrame = self.tweets_DataFrame.append({
                     'author': json.loads(data)['user']['name'],
@@ -77,19 +68,16 @@ class MyStreamListener(tweepy.StreamListener):
             else:
 
                 print("Number of tweets exceded")
-                #print(self.tweets_DataFrame.dtypes)
-                #print(self.tweets_DataFrame)
                 
                 pd.set_option('display.max_colwidth', -1)
 
                 tweetsTable = self.tweets_DataFrame.copy()
-                #tweetsWordsDico = {}
 
                 # DATA CLEANING
                 
                 #Exclusion du mot clé de l'utilisateur
                 print("******************* EXCLUSION DU MOT CLE CHOISI *******************")
-                self.tweets_DataFrame['text'] = self.tweets_DataFrame['text'].apply(lambda x: re.sub("([^\w]*"+self.keyword+"[^\w]*)+|[|\\^&\r\n]+", ' ', x))
+                self.tweets_DataFrame['text'] = self.tweets_DataFrame['text'].apply(lambda x: re.sub("([^\w]*#*"+self.keyword+"[^\w]*)+|[|\\^&\r\n]+", ' ', x))
                 
                 # Minuscule
                 print("******************* FORCER MINUSCULES *******************")
@@ -124,7 +112,6 @@ class MyStreamListener(tweepy.StreamListener):
                     for i,t in self.tweets_DataFrame.iterrows():
                         end_tweets_cpt = 0
                         if newRow!=[]:
-                            print(newRow)
                             rows1[i-1][1] = newRow[:]
                             rows1[i-1] = tuple(rows1[i-1])
                             newRow[:] = []
@@ -132,18 +119,14 @@ class MyStreamListener(tweepy.StreamListener):
                         for word in t['text']:
                             end_tweets_cpt+=1
                             if(word not in stopwords):
-                                print("Ajouté au tweet")
                                 newRow.append(word)
                             if(end_tweets_cpt == len(t['text']) and i == len(self.tweets_DataFrame)-1):
-                                print("FIN DU DATAFRAME")
                                 rows1[i] = (t['author'],newRow[:],t['timestamp'])
 
                 self.tweets_DataFrame = pd.DataFrame(rows1,columns=['author','text','timestamp'])
  
                 #ALGO TF-IDF
                 #Création d'un second dataframe regroupant tous les mots par document
-                    #https://sigdelta.com/blog/text-analysis-in-pandas/
-                    #http://kavita-ganesan.com/extracting-keywords-from-text-tfidf/#.XNcAUbvVKUk
                 rows2 = list()
                 cpt_docs = 0
                 
@@ -161,7 +144,7 @@ class MyStreamListener(tweepy.StreamListener):
                 #création d'un histogramme des x mots les plus fréquents dans le corpus
                 ax = counts.count(level="word").sort_values(by="word_occurence_tweet", ascending = False)[0:self.max_value_hist].plot.bar()
                 fig = ax.get_figure()
-                fig.savefig(self.hist_path, bbox_inches='tight')
+                fig.savefig(self.hist_path, bbox_inches='tight', dpi=160)
 
 
                 #on récupère ensuite le nombre de mots total de chaque tweet permettant de calculer le tf
@@ -171,16 +154,61 @@ class MyStreamListener(tweepy.StreamListener):
                 tf = counts.join(word_sum)
                 tf['tf'] = tf.word_occurence_tweet/tf.nb_words_tweets
 
-                print(tf)
-                #export page html
+                #on récupère ensuite la fréquence d'apparition de chaque mots dans le corpus (mot | nb de document dans lequel il apparaît)
+                idf = words.groupby('word')['id tweet'].nunique().to_frame().rename(columns={'id tweet':'word_occurence_corpus'})
+
+                #on calcule ensuite l'idf de chaque mot selon la formule
+                idf['idf'] = np.log(words['id tweet'].nunique()/idf.word_occurence_corpus.values)
+                
+                #on joint ensuite les 2 dataframes et on calcule le tf_idf en multipliant chaque valeur du mot associé                
+                tf_idf = tf.join(idf)
+
+                tf_idf['tf_idf'] = tf_idf.tf * tf_idf.idf
+
+                #on crée ensuite un dataframe propre contenant seulement les 3 colonnes importantes:
+                #(id tweet | mot) | indice tf_idf associé
+                tf_idf_clean = tf_idf['tf_idf'].to_frame()
+                
+                #on transforme ensuite celui-ci en dictionnaire et on crée un second dataframe contenant
+                #les tweets et leur valeur tf_idf associé
+                rows3 = list()
+                finalWordDict = {}
+                for i in tf_idf_clean.iterrows():
+                    rows3.append((i[0][0], i[1][0]))
+                    finalWordDict[i[0][1]] = i[1][0]
+                tweets_Weight = pd.DataFrame(rows3, columns=['id_tweet','tf_idf'])                
+                tweet_Weight = tweets_Weight.groupby('id_tweet').sum().sort_values('tf_idf',ascending = False)
+                
+                #on crée un set d'id des tweets les plus significatifs
+                listIdTweets = set()
+                cpt = 1
+                for i,row in tweet_Weight.iterrows():
+                    if(cpt<=self.max_displayed_tweets):
+                        listIdTweets.add(i)
+                    cpt+=1
+
+                #on récupère ces tweets dans le dataframe original
+                listDisplayedTweets = list()
+                for i,row in tweetsTable.iterrows():
+                    if(i in listIdTweets):
+                        listDisplayedTweets.append(row)
+
+                dfDisplayedTweets = pd.DataFrame(listDisplayedTweets)
+                dfDisplayedTweets.columns=['Auteur', 'Tweet','Date et heure']
+                
+                #on génère pour finir l'image du nuage de mot à inclure dans la page web       
+                cloud = WordCloud(background_color="black",width=800,height=800, max_words=self.max_words_cloud,relative_scaling=0.5,normalize_plurals=False).generate_from_frequencies(finalWordDict)
+                cloud.to_file(self.wordcloud_path)
+                
+                #export en page html
                 with open(self.index_viz_path, 'w') as file:
                     file.write(htmlContent.format(
                     	motCle = self.keyword,
                     	nbTweets = self.nb_tweets_limit,
                     	timestamp= self.timestamp,
                     	hist = "../"+self.hist_path,
-                    	wordcloud = 'Wordcloud',
-                    	table = tweetsTable.to_html(table_id="tweetsTable")
+                    	wordcloud = '../'+self.wordcloud_path,
+                    	table = dfDisplayedTweets.to_html(table_id="tweetsTable", index=False)
                     	))              
 
                 
@@ -201,22 +229,17 @@ if __name__ == "__main__":
     auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
     api = tweepy.API(auth)
 
-    MyStreamListener = MyStreamListener()
-
     parser = argparse.ArgumentParser(description='')
     parser.add_argument('keyword', help="Le mot clé à rechercher")
     parser.add_argument('nbMaxTweets', type = int ,help="Le nombre de tweets maximum à récupérer")
-    parser.add_argument('indexPath',help="Le chemin vers la page html de visualisation à générer")
 
     args = parser.parse_args()
+    
+    MyStreamListener = MyStreamListener(int(args.nbMaxTweets))
 
-    MyStreamListener.keyword = str(args.keyword)
-    MyStreamListener.nb_tweets_limit = int(args.nbMaxTweets)
-    MyStreamListener.index_viz_path = str(args.indexPath)
+    MyStreamListener.keyword = str(args.keyword) 
 
     MyStreamListener.timestamp = timestamp
     
-    f = open(MyStreamListener.stored_tweets_path, "w")
-    f.close()
     myStream = tweepy.Stream(auth=api.auth, listener=MyStreamListener, tweet_mode='extended')
     myStream.filter(languages=["fr"],track=[str(' '+MyStreamListener.keyword+' ')])

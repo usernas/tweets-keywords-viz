@@ -39,6 +39,7 @@ doit
 donc
 début
 e
+es
 elle
 elles
 en

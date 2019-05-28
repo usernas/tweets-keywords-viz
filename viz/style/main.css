@@ -1,7 +1,30 @@
+h1{
+	margin:20px;
+	padding:50px;
+	font-family: "Lucida Console", Monaco, monospace;
+	text-align: center;
+	font-size:50px;
+}
 #params ol{
 	list-style: none;
 	margin : 15px;
+	font-family: "Lucida Console", Monaco, monospace;
+
 }
+
+#params li{
+	margin:10px;
+	font-size:20px;
+}
+
+strong{
+	font-size:125%;
+}
+
+.red{
+	color:red;
+}
+
 #dataviz{
 	margin:15px;
 	width:100%;
@@ -10,14 +33,25 @@
 #hist{
 display:inline-block;
 width:auto;
-float:left;
 }
 #wordcloud{
-	float:right;
 	display:inline-block;
 	width:auto;
 }
+
+th{
+	text-align:center;
+	font-family: "Lucida Console", Monaco, monospace;
+}
+
 #tweetsTable td{
 	width:33%;
 	height:50px;
+	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", 
+  Helvetica, Arial, "Lucida Grande", sans-serif;
+}
+
+.inline-bloc{
+	margin:25px;
+	display:inline-block;
 }

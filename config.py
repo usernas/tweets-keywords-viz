@@ -7,20 +7,20 @@ htmlContent = """
 	</head>
 	<body>
 		<header>
-			<h1>Tweets keywords visualization</h1>
+			<h1>Tweets Keywords Visualization</h1>
 		</header>
 		<div id="params">
 			<ol>
-				<li>Mot clé : <strong>{motCle}</strong></li>
-				<li>Nombre de tweets à récupérer : {nbTweets}</li>
-				<li>Date/heure lancement du script : {timestamp}</li>
+				<li>Mot clé : <strong class="red">{motCle}</strong></li>
+				<li>Nombre de tweets à récupérer : <strong>{nbTweets}</strong></li>
+				<li>Date/heure lancement du script : <strong>{timestamp}</strong></li>
 			</ol>
 		</div>
 		<div id="dataviz">
-			<div id="hist"><img src="{hist}" alt="Histogramme"/></div>
-    		<div id ="table">{wordcloud}</div>
+			<div id="hist" class="inline-bloc"><img src="{hist}" alt="Histogramme"/></div>
+    		<div id ="wordcloud" class="inline-bloc"><img src="{wordcloud}" alt="Wordcloud"/></div>
     	</div>
-    	<div id ="table">{table}</div>
+    	<div>{table}</div>
 	</body>
 </html>
 """

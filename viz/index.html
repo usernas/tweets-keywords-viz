@@ -7,178 +7,32 @@
 	</head>
 	<body>
 		<header>
-			<h1>Tweets keywords visualization</h1>
+			<h1>Tweets Keywords Visualization</h1>
 		</header>
 		<div id="params">
 			<ol>
-				<li>Mot clé : <strong>que</strong></li>
-				<li>Nombre de tweets à récupérer : 25</li>
-				<li>Date/heure lancement du script : 2019-05-23 23:25:54.210856</li>
+				<li>Mot clé : <strong class="red">que</strong></li>
+				<li>Nombre de tweets à récupérer : <strong>20</strong></li>
+				<li>Date/heure lancement du script : <strong>2019-05-29 01:16:35.955801</strong></li>
 			</ol>
 		</div>
 		<div id="dataviz">
-			<div id="hist"><img src=".././viz/img/hist.png" alt="Histogramme"/></div>
-    		<div id ="table">Wordcloud</div>
+			<div id="hist" class="inline-bloc"><img src=".././viz/img/hist.png" alt="Histogramme"/></div>
+    		<div id ="wordcloud" class="inline-bloc"><img src=".././viz/img/wordcloud.png" alt="Wordcloud"/></div>
     	</div>
-    	<div id ="table"><table border="1" class="dataframe" id="tweetsTable">
+    	<div><table border="1" class="dataframe" id="tweetsTable">
   <thead>
     <tr style="text-align: right;">
-      <th></th>
-      <th>author</th>
-      <th>text</th>
-      <th>timestamp</th>
+      <th>Auteur</th>
+      <th>Tweet</th>
+      <th>Date et heure</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <th>0</th>
-      <td>vir</td>
-      <td>Que bien la pase 🤤</td>
-      <td>Thu May 23 21:25:53 +0000 2019</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>Léo</td>
-      <td>Bon, mardi soir en boîte j'ai eu une discussion assez poussé avec une fille que j'connaissais depuis ~1h... elle m'… https://t.co/i7nPJdVN5P</td>
-      <td>Thu May 23 21:25:53 +0000 2019</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>lulu</td>
-      <td>J’ai tellement envie de l’insulter fort, c’est vraiment chaud je commence à avoir de la haine à un point que ça va devenir néfaste la</td>
-      <td>Thu May 23 21:25:53 +0000 2019</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>Le Roi Flan</td>
-      <td>C'est un mec avec une épée en bois qui a une permanente naturelle et il travaille des fois</td>
-      <td>Thu May 23 21:25:53 +0000 2019</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>سارة</td>
-      <td>WSH REGARDEZ L'H A LAQUELL G TWEETER JE LA MANGE QUE MAINTENANT EH 30 MINUTES TRENTE MINUTES</td>
-      <td>Thu May 23 21:25:53 +0000 2019</td>
-    </tr>
-    <tr>
-      <th>5</th>
-      <td>la diff</td>
-      <td>@YassinGlm Jav que c’est grave drôle j’en pleure de rire sur mon canapé la</td>
-      <td>Thu May 23 21:25:53 +0000 2019</td>
-    </tr>
-    <tr>
-      <th>6</th>
-      <td>COCO ZIDANE 🇨🇮🇲🇦👑</td>
-      <td>@mougou_dja @WillyBobby_ @Le_Phoulo @jordanboris326 @ismaelarthur68 @LucasDeroussen8 @Lebeurgeur1 @FranckyKroos… https://t.co/JmiXTUDLYT</td>
-      <td>Thu May 23 21:25:54 +0000 2019</td>
-    </tr>
-    <tr>
-      <th>7</th>
-      <td>Ragnar</td>
-      <td>@Spychou21 @MemelMiss rappel toi toutes ces histoires pour de la merde, rappel toi que fallait faire attention à ch… https://t.co/W7lW7csG7S</td>
-      <td>Thu May 23 21:25:54 +0000 2019</td>
-    </tr>
-    <tr>
-      <th>8</th>
-      <td>Kmo</td>
-      <td>Je vous annonce que je viens de valider ma licence en trichant à TOUS mes partiels. Et je suis ultra d’avoir passé… https://t.co/HzEJMDZ1BR</td>
-      <td>Thu May 23 21:25:54 +0000 2019</td>
-    </tr>
-    <tr>
-      <th>9</th>
-      <td>moha</td>
-      <td>@b______ella Jvais reg toute les serie que jdois finir j’ai plus que 20 après tu vas me donner des trucs a regarder</td>
-      <td>Thu May 23 21:25:54 +0000 2019</td>
-    </tr>
-    <tr>
-      <th>10</th>
-      <td>mariposa</td>
-      <td>@LNFranco_FI Par contre vous , vous n êtes que ridicule ...</td>
-      <td>Thu May 23 21:25:54 +0000 2019</td>
-    </tr>
-    <tr>
-      <th>11</th>
-      <td>Vincent Feltkamp</td>
-      <td>@VOOetvous pourquoi me demandez-vous de la vitesse par les cable? Avec mon telephone je ne peux pas m' y connecter.… https://t.co/YQhNUx84uj</td>
-      <td>Thu May 23 21:25:54 +0000 2019</td>
-    </tr>
-    <tr>
-      <th>12</th>
-      <td>du né</td>
-      <td>Donc lundi j’suis au chômage c’est pas la vie que j’ai décidé de mener ça</td>
-      <td>Thu May 23 21:25:55 +0000 2019</td>
-    </tr>
-    <tr>
-      <th>13</th>
-      <td>Little tomboy</td>
-      <td>Ça préfère se déhanché avec ces potes que de régler les problèmes? Mdr faudra pas venir chialer</td>
-      <td>Thu May 23 21:25:55 +0000 2019</td>
-    </tr>
-    <tr>
-      <th>14</th>
-      <td>Martin🔥</td>
-      <td>"Aujourd'hui, nous avons des puissances plus fortes que les états : les multinationales. Il faut que nous soyons ca… https://t.co/NiVKmAOvAW</td>
-      <td>Thu May 23 21:25:55 +0000 2019</td>
-    </tr>
-    <tr>
-      <th>15</th>
-      <td>STREAMEZ ECLIPSE 🌒 J-23</td>
-      <td>Est ce que je pleure devant le mv de Mixtape 2 de Stray Kids? \nOui totalement</td>
-      <td>Thu May 23 21:25:55 +0000 2019</td>
-    </tr>
-    <tr>
-      <th>16</th>
-      <td>Bor Jores Fotso</td>
-      <td>@stefyclinton @ArmelGAC @freedahbass Ca c'est vrai. Faut que je brille aussi sur TT. maybe on va plus me unfollow s… https://t.co/0jU9ut9GZo</td>
-      <td>Thu May 23 21:25:55 +0000 2019</td>
-    </tr>
-    <tr>
-      <th>17</th>
-      <td>Koty</td>
-      <td>@RomainHaering Jardim ? Je ne vois que lui qui pourrait nous correspondre ou ranieri.</td>
-      <td>Thu May 23 21:25:55 +0000 2019</td>
-    </tr>
-    <tr>
-      <th>18</th>
-      <td>✌</td>
-      <td>@Lepseudootakun @PCampinOuari @Guill_Melanie La différence c'est que les Gay Games accueillent tout le monde peut i… https://t.co/DvyvC2oS62</td>
-      <td>Thu May 23 21:25:56 +0000 2019</td>
-    </tr>
-    <tr>
-      <th>19</th>
-      <td>nadia</td>
-      <td>je suis désolé que tu sois blessé</td>
-      <td>Thu May 23 21:25:56 +0000 2019</td>
-    </tr>
-    <tr>
-      <th>20</th>
-      <td>Anatole Lannister</td>
-      <td>Jklhllhlhkkjlljlbjnjnhhl\nVla t'i pas que je rentre chez moi, et quel genre de tag je retrouve sur l'église en face… https://t.co/HKct0syIcK</td>
-      <td>Thu May 23 21:25:56 +0000 2019</td>
-    </tr>
-    <tr>
-      <th>21</th>
-      <td>AKKA</td>
-      <td>En vrai le Happy Meal a grave changé depuis notre temps : maintenant, ils ont le choix de prendre des tomates, un f… https://t.co/i8TqcRbxME</td>
-      <td>Thu May 23 21:25:57 +0000 2019</td>
-    </tr>
-    <tr>
-      <th>22</th>
-      <td>🇲🇦مجيد Arif ino 🇲🇦</td>
-      <td>Très juste 👍🏻👍🏻</td>
-      <td>Thu May 23 21:25:57 +0000 2019</td>
-    </tr>
-    <tr>
-      <th>23</th>
-      <td>Anne-Marie.C....</td>
-      <td>@SJallamion 18 ans et 47 ans .. c'est chaud quand même \nJ'ai HONTE \nRien que pour ça je ne vote pas pour lui \n\nLa honte les #français</td>
-      <td>Thu May 23 21:25:57 +0000 2019</td>
-    </tr>
-    <tr>
-      <th>24</th>
-      <td>Olivier</td>
-      <td>Nous sommes dans le monde, que ca plaise ou non.\nLes agriculteurs exportent dans le🌍entier. Marine #LePen est un me… https://t.co/pq80oevZIG</td>
-      <td>Thu May 23 21:25:57 +0000 2019</td>
+      <td>hgs</td>
+      <td>J'ai pris deux sérums et une boîte d'aloe vera (92%, ça faisait longtemps que je voulais la tester)</td>
+      <td>Tue May 28 23:16:33 +0000 2019</td>
     </tr>
   </tbody>
 </table></div>
