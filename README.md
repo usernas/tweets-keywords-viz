@@ -3,10 +3,19 @@
 Ce script python permet de visualiser les mots les plus importants de tweets contenant un mot clé choisi par l'utilisateur. Une page web sera alors générée à l'exécution, permettant de révéler une tendance.
 Cette page web contiendra alors :
 * Un histogramme contenant les mots apparaissant le plus fréquemment dans le corpus
-* Un nuage de mot illustrant les termes les plus important en fonction de leur taille, généré à partir de l'algorithme TF-IDF
+* Un nuage de mots illustrant les termes les plus important en fonction de leur taille, généré à partir de l'algorithme TF-IDF
 * Une liste des tweets les plus significatifs, dont l'indice TF-IDF est le plus grand
 
 ## Lancement du script
+
+Attention le lancement du script nécessite de stocker ses clés API dans un fichier api_credential.py situé à la racine du projet.
+
+```python
+CONSUMER_API_KEY = "xxx"
+CONSUMER_API_SECRET_KEY = "xxx"
+ACCESS_TOKEN = "xxx"
+ACCESS_TOKEN_SECRET = "xxx"
+```
 
 Lors du lancement du script il suffit d'indiquer les 2 paramètres suivant :
 * le mot clé choisi
