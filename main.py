@@ -29,19 +29,18 @@ class MyStreamListener(tweepy.StreamListener):
     """classe permettant de réaliser un traitement sur les tweets reçus (stockage,
     analyse...)"""
 
-    def __init__(self, nbTweetsLimit,index = "./viz/index.html"):
+    def __init__(self, nbTweetsLimit):
         self.keyword = ''
         self.timestamp = ''
         self.nb_tweets_limit = nbTweetsLimit
         self.cpt_tweets = 1
-        self.index_viz_path = index
+        self.index_viz_path = "./viz/index.html"
         self.hist_path = "./viz/img/hist.png"
         self.wordcloud_path = "./viz/img/wordcloud.png"
         self.max_value_hist = 25
         self.max_words_cloud = 100
         self.max_displayed_tweets = int(math.ceil(self.nb_tweets_limit*0.05))
-        self.tweets_DataFrame = pd.DataFrame(
-            columns=['author', 'text', 'timestamp'])
+        self.tweets_DataFrame = pd.DataFrame(columns=['author', 'text', 'timestamp'])
 
     def on_connect(self):
         print("Connexion établie")
@@ -57,8 +56,6 @@ class MyStreamListener(tweepy.StreamListener):
                     'timestamp': json.loads(data)['created_at']}, ignore_index=True)
 
                 self.cpt_tweets += 1
-
-                #file.close()
                 return True
 
             elif(json.loads(data)['text'].startswith("RT @") and self.cpt_tweets <= self.nb_tweets_limit):
@@ -67,7 +64,7 @@ class MyStreamListener(tweepy.StreamListener):
 
             else:
 
-                print("Number of tweets exceded")
+                print("Number of tweets reached")
                 
                 pd.set_option('display.max_colwidth', -1)
 
@@ -164,7 +161,7 @@ class MyStreamListener(tweepy.StreamListener):
                 tf_idf = tf.join(idf)
 
                 tf_idf['tf_idf'] = tf_idf.tf * tf_idf.idf
-
+                
                 #on crée ensuite un dataframe propre contenant seulement les 3 colonnes importantes:
                 #(id tweet | mot) | indice tf_idf associé
                 tf_idf_clean = tf_idf['tf_idf'].to_frame()
@@ -242,4 +239,4 @@ if __name__ == "__main__":
     MyStreamListener.timestamp = timestamp
     
     myStream = tweepy.Stream(auth=api.auth, listener=MyStreamListener, tweet_mode='extended')
-    myStream.filter(languages=["fr"],track=[str(' '+MyStreamListener.keyword+' ')])
+    myStream.filter(languages=['fr'],track=[str(' '+MyStreamListener.keyword+' ')])
