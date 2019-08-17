@@ -25,7 +25,7 @@ Lors du lancement du script il suffit d'indiquer les 2 paramètres suivant :
 python3 main.py test 100
 ```
 
-## Les librairie utilisées
+## Les librairies utilisées
 
 ```python
 import tweepy
